@@ -35,6 +35,8 @@ from pygame.locals import *
 
 from player import Player
 
+import pytmx
+
 def get_360_controller():
     '''
     Assume pygame.init() is called before this
@@ -120,13 +122,20 @@ def main():
                     player.go_left()
                 if event.key == pygame.K_RIGHT:
                     player.go_right()
+                if event.key == pygame.K_DOWN:
+                    player.go_down()
                 if event.key == pygame.K_UP:
-                    player.jump()
+                    player.go_up()
+                    
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT and player.change_x < 0:
                     player.stop()
                 if event.key == pygame.K_RIGHT and player.change_x > 0:
+                    player.stop()
+                if event.key == pygame.K_UP and player.change_y < 0:
+                    player.stop()
+                if event.key == pygame.K_DOWN and player.change_y > 0:
                     player.stop()
 
             # also check controller input
@@ -141,23 +150,42 @@ def main():
                         #right_trigger.value = event.value
                         print("2")
                         pass
-                    elif event.axis == 1:
-                        #left_stick.y = stick_center_snap(event.value * -1)
-                        print("event.value="+str(event.value*1))
-                        if event.value > 0.3:
-                            player.go_right()
-                        elif event.value < -0.3:
-                            player.go_left()
-                        else:
-                            player.stop()
-                    #elif event.axis == 0:
-                    #    print("event.value="+str(event.value*1))
-                    #    if event.value > 0.3:
-                    #        player.go_right()
-                    #    elif event.value < -0.3:
-                    #        player.go_left()
-                    #    else:
-                    #        player.stop()
+                    elif event.axis == 1 or event.axis == 0:
+                        # For smoother xbox 360 controls
+                        left_right_on = False
+                        up_down_on = False
+                        if event.axis == 1: # right and left motion
+                            if event.value > 0.2:
+                                player.go_right(speed=event.value*5)
+                            elif event.value < -0.2:    
+                                player.go_left(speed=event.value*5)
+                            else:
+                                player.stop_left_right()
+#                             if event.value > 0.3:
+#                                 player.go_right()
+#                                 left_right_on = True
+#                             elif event.value < -0.3:
+#                                 player.go_left()
+#                                 left_right_on = True
+                                
+                        elif event.axis == 0: # up and down motion
+                            if event.value > 0.2:
+                                player.go_up(speed=-event.value*5)
+                            elif event.value < -0.2:    
+                                player.go_down(speed=-event.value*5)
+                            else:
+                                player.stop_up_down()
+                            #print("event.value="+str(event.value*1))
+#                             if event.value > 0.3:
+#                                 player.go_up()
+#                                 up_down_on = True
+#                             elif event.value < -0.3:
+#                                 player.go_down()
+#                                 up_down_on = True
+#                             
+#                         if not (left_right_on or up_down_on):
+#                                 player.stop()
+#                                 
                     elif event.axis == 3:
                         #right_stick.y = stick_center_snap(event.value * -1)
                         pass

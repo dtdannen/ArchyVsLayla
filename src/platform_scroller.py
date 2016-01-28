@@ -81,10 +81,13 @@ def main():
     # Create the player
     player = Player()
 
+    # create container for fireballs
+    fireballs = []
+
     # Create all the levels
     level_list = []
     level_list.append(levels.Level_01(player))
-    level_list.append(levels.Level_02(player))
+    #level_list.append(levels.Level_02(player))
 
     # Set the current level
     current_level_no = 0
@@ -152,8 +155,8 @@ def main():
                         pass
                     elif event.axis == 1 or event.axis == 0:
                         # For smoother xbox 360 controls
-                        left_right_on = False
-                        up_down_on = False
+#                         left_right_on = False
+#                         up_down_on = False
                         if event.axis == 1: # right and left motion
                             if event.value > 0.2:
                                 player.go_right(speed=event.value*5)
@@ -198,7 +201,7 @@ def main():
                     #buttons[event.button].value = 1
                     if event.button == 0:
                         # jump
-                        player.jump()
+                        active_sprite_list.add(player.shoot_fireball())
                     else:
                         print("event.button == "+str(event.button))
                 elif event.type == JOYBUTTONUP:

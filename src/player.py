@@ -210,3 +210,5 @@ class Player(pygame.sprite.Sprite):
     
     def stop_up_down(self):
         self.change_y = 0
+        
+    def shoot_fireball(self,):
